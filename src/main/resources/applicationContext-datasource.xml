@@ -23,12 +23,11 @@
         <property name="fileEncoding" value="utf-8"/>
     </bean>
 
-
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="${db.driverClassName}"/>
-        <property name="url" value="jdbc:mysql://10.211.55.10:3306/e_commerce"/>
-        <property name="username" value="mmall"/>
-        <property name="password" value="mmall"/>
+        <property name="url" value="${db.url}"/>
+        <property name="username" value="${db.username}"/>
+        <property name="password" value="${db.password}"/>
         <!-- 连接池启动时的初始值 -->
         <property name="initialSize" value="${db.initialSize}"/>
         <!-- 连接池的最大值 -->
@@ -77,7 +76,7 @@
     </bean>
 
     <bean name="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.mmall.dao"/>
+        <property name="basePackage" value="com.e_commerce.dao"/>
     </bean>
 
     <!-- 使用@Transactional进行声明式事务管理需要声明下面这行 -->

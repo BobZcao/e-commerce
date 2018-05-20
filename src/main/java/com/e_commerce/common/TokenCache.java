@@ -31,7 +31,9 @@ public class TokenCache {
     public static void setKey(String key, String value){
         localCache.put(key,value);
     }
-
+    public static long getSize(){
+        return localCache.size();
+    }
     public static String getKey(String key){
         String value = null;
         try{
@@ -39,10 +41,10 @@ public class TokenCache {
             if("null".equals(value)){
                 return null;
             }
+            return value;
         }catch (Exception e){
             logger.error("localCache get error", e);
         }
         return null;
     }
-
 }

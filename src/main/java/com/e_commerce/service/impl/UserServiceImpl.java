@@ -44,7 +44,7 @@ public class UserServiceImpl implements IUserService {
 
     public ServerResponse<String> register(User user){
 
-        ServerResponse validResponse = this.checkValid(user.getUsername(),Const.CURRENT_USER);
+        ServerResponse validResponse = this.checkValid(user.getUsername(),Const.USERNAME);
         if(!validResponse.isSuccess()){
             return validResponse;
         }
@@ -84,7 +84,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     public ServerResponse<String> selectQuestion(String username){
-        ServerResponse validResponse = this.checkValid(username, Const.CURRENT_USER);
+        ServerResponse validResponse = this.checkValid(username, Const.USERNAME);
         //user not existed
         if(validResponse.isSuccess()){
             return ServerResponse.createByErrorMessage("user not existed");
@@ -112,13 +112,13 @@ public class UserServiceImpl implements IUserService {
         if(org.apache.commons.lang3.StringUtils.isBlank(forgetToken)){
             return ServerResponse.createByErrorMessage("Forget token error, token not passed");
         }
-        ServerResponse validResponse = this.checkValid(username, Const.CURRENT_USER);
+        ServerResponse validResponse = this.checkValid(username, Const.USERNAME);
         if(validResponse.isSuccess()){
             return ServerResponse.createByErrorMessage("User not existed");
         }
         String token = TokenCache.getKey(TokenCache.TOKEN_PREFIX+username);
         if(org.apache.commons.lang3.StringUtils.isBlank(token)){
-            return ServerResponse.createByErrorMessage("Token not valid or out of date");
+            return ServerResponse.createByErrorMessage("Token not valid or out of date " + TokenCache.getSize());
         }
         if(org.apache.commons.lang3.StringUtils.equals(forgetToken,token)){
             String md5Password = MD5Util.MD5EncodeUtf8(passwordNew);
@@ -175,6 +175,13 @@ public class UserServiceImpl implements IUserService {
         }
         user.setPassword(StringUtils.EMPTY);
         return ServerResponse.createBySuccess(user);
+    }
+
+    public ServerResponse checkAdminRole(User user){
+        if(user != null && user.getRole().intValue() == Const.Role.ROLE_ADMIN){
+            return ServerResponse.createBySuccess();
+        }
+        return ServerResponse.createByError();
     }
 }
 

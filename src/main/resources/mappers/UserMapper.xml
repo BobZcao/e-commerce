@@ -167,8 +167,8 @@
 -- do not select *
     <include refid="Base_Column_List" />
     from e_commerce_user
-    where username = ${username}
-    and password = ${password}
+    WHERE username = #{username}
+    and password = #{password}
   </select>
 
   <select id="selectQuestionByUsername" resultType="string" parameterType="string">
@@ -201,7 +201,8 @@
     and password =#{password}
   </select>
 
-  <select id="checkEmailByUserId" resultType="int" parameterMap="map">
+
+  <select id="checkEmailByUserId" resultType="int" parameterType="map">
     SELECT count(1)
     FROM e_commerce_user
     WHERE email = #{email}
