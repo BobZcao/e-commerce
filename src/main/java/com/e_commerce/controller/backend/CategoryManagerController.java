@@ -18,7 +18,7 @@ import javax.servlet.http.HttpSession;
  * Created by code on 5/20/18.
  */
 @Controller
-@RequestMapping("manage/category")
+@RequestMapping("/manage/category")
 public class CategoryManagerController {
 
     @Autowired
@@ -52,6 +52,37 @@ public class CategoryManagerController {
         //check whether it is manager.
         if(iUserService.checkAdminRole(user).isSuccess()){
             return iCategoryService.updateCategory(categoryId, categoryName);
+        }else{
+            return ServerResponse.createByErrorMessage("no right to do, need admin authority");
+        }
+    }
+
+
+    @RequestMapping("get_category.do")
+    @ResponseBody
+    public ServerResponse getChildrenParallelCategory(HttpSession session,@RequestParam(value = "categoryId",defaultValue = "0") Integer categoryId){
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"user not loggin, please login");
+        }
+        if(iUserService.checkAdminRole(user).isSuccess()){
+            //search child node category information
+            return iCategoryService.getChildrenParallelCategory(categoryId);
+        }else{
+            return ServerResponse.createByErrorMessage("no right to do, need admin authority");
+        }
+    }
+
+    @RequestMapping("get_deep_category.do")
+    @ResponseBody
+    public ServerResponse getCategoryAndDeepChildrenCategory(HttpSession session, @RequestParam(value="categoryId", defaultValue = "0") Integer categoryId){
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        if(user == null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"user not loggin, please login");
+        }
+        if(iUserService.checkAdminRole(user).isSuccess()){
+            //查看当前节点的id和递归子节点的id
+            return iCategoryService.selectCategoryAndChildrenById(categoryId);
         }else{
             return ServerResponse.createByErrorMessage("no right to do, need admin authority");
         }
